@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server"
   },
   "author": "Harsh Patel",
