@@ -13,7 +13,6 @@ const config = require("config");
 router.post(
   "/",
   [
-    check("restaurantname", "Restaurant Name is Required").not().isEmpty(),
     check("name", "Name of Owner is Required").not().isEmpty(),
     check("email", "Email is Required").isEmail(),
     check("password", "Password with 6 or more letters is Required").isLength({
@@ -26,7 +25,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const {restaurantname, name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     try {
       // See if the admins exists
@@ -38,7 +37,6 @@ router.post(
       }
 
       admin = new Admin({
-        restaurantname,
         name,
         email,
         password,

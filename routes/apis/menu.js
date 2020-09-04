@@ -19,7 +19,13 @@ router.get("/me", authadmin, async (req, res) => {
   try {
     const menu = await Menu.findOne({
       admin: req.admin.id,
-    }).populate("admin", ["name", "restaurantname", "role"]);
+    }).populate("admin", [
+      "name",
+      "restaurantname",
+      "role",
+      "restaurantdescription",
+      "restauranttype",
+    ]);
     if (!menu) {
       return res.status(400).json({ msg: "There is not menu for this admin" });
     }
@@ -36,17 +42,21 @@ router.get("/me", authadmin, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const menus = await Menu.find().populate("admin", [
-      "name",
-      "restaurantname",
-      "role",
-    ]);
+    const menus = await Menu.find().populate("admin._id");
     res.json(menus);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
+
+// [
+//   "name",
+//   "restaurantname",
+//   "restauranttype",
+//   "restaurantdescription",
+//   "role",
+// ]
 
 //@route  POST api/menu
 //@desc   Create or Update a admin profile
@@ -57,6 +67,12 @@ router.post(
   [
     authadmin,
     [check("restaurantname", "Restaurant Name is required").not().isEmpty()],
+    [check("restauranttype", "Restaurant Type is required").not().isEmpty()],
+    [
+      check("restaurantdescription", "Restaurant Description is required")
+        .not()
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -64,12 +80,15 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { restaurantname } = req.body;
+    const { restaurantname, restaurantdescription, restauranttype } = req.body;
 
     //Build the profile object
     const menuFields = {};
     menuFields.admin = req.admin.id;
     if (restaurantname) menuFields.restaurantname = restaurantname;
+    if (restauranttype) menuFields.restauranttype = restauranttype;
+    if (restaurantdescription)
+      menuFields.restaurantdescription = restaurantdescription;
 
     try {
       let menu = await Menu.findOne({ admin: req.admin.id });
@@ -103,7 +122,13 @@ router.get("/admin/:admin_id", async (req, res) => {
   try {
     const menu = await Menu.findOne({
       admin: req.params.admin_id,
-    }).populate("admin", ["name", "restaurantname", "role"]);
+    }).populate("admin", [
+      "name",
+      "restaurantname",
+      "role",
+      "restaurantdescription",
+      "restauranttype",
+    ]);
     if (!menu)
       return res.status(400).json({ msg: "Menu not found for this user" });
     res.json(menu);
@@ -143,7 +168,7 @@ router.delete("/", authadmin, async (req, res) => {
 router.put(
   "/item",
   [
-    auth,
+    authadmin,
     [
       check("name", "name is required").not().isEmpty(),
       check("price", "price is required").not().isEmpty(),
@@ -164,6 +189,7 @@ router.put(
       description,
       isveg,
     };
+    newItem.admin = req.admin.id;
 
     try {
       const menu = await Menu.findOne({ admin: req.admin.id });
@@ -176,4 +202,26 @@ router.put(
     }
   }
 );
+
+//@route    Put api/profile/experience/exp_id
+//@desc     Delete profile experience
+//@access   Private
+
+router.delete("/item/:item_id", authadmin, async (req, res) => {
+  try {
+    const menu = await Menu.findOne({ admin: req.admin.id });
+    //Remove Index
+
+    const removeIndex = menu.item
+      .map((items) => items.id)
+      .indexOf(req.params.item_id);
+    menu.item.splice(removeIndex, 1);
+    await menu.save();
+    res.json(menu);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;

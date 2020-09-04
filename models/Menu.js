@@ -11,10 +11,27 @@ const MenuSchema = new Schema({
     type: String,
     required: true,
   },
+  restaurantdescription: {
+    type: String,
+    required: true,
+  },
+  restauranttype: {
+    type: String,
+    required: true,
+  },
   item: [
     {
+      admin: {
+        type: Schema.Types.ObjectId,
+        ref: "admin",
+      },
       name: {
         type: String,
+        required: true,
+      },
+      role:{
+        type: String,
+        default:"manager",
         required: true,
       },
       price: {
