@@ -8,10 +8,19 @@ const OrderSchema = new Schema({
   },
   admin: {
     type: Schema.Types.ObjectId,
-    ref: "admin",
+    required: true,
   },
-  
-  total_amount: { type: Number, required: true },
+  username: {
+    type: String,
+  },
+  useremail: {
+    type: String,
+  },
+  resname: {
+    type: String,
+  },
+  _meals: [],
+  amount: { type: Number, required: true },
   status: { type: String, required: true, default: "placed" },
   created_at: {
     type: Date,

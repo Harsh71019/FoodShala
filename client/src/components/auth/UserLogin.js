@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
-const Login = ({ login, isAuthenticated }) => {
+const UserLogin = ({ login, auth: { isAuthenticated, loading } }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,12 +21,14 @@ const Login = ({ login, isAuthenticated }) => {
   //Redirected if logged in
 
   if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/restaurant-view" />;
   }
+  
+  
   return (
     <Fragment>
       {" "}
-      <h1 className="large text-primary">Sign In</h1>
+      <h1 className="large text-primary">Sign In as User</h1>
       <p className="lead">
         <i className="fas fa-user"></i> Sign Into Your Account
       </p>
@@ -56,19 +58,19 @@ const Login = ({ login, isAuthenticated }) => {
         <input type="submit" className="btn btn-primary" value="Login" />
       </form>
       <p className="my-1">
-        Dont have an account? <Link to="/register">Sign Up</Link>
+        Dont have an account? <Link to="/userregister">Sign Up</Link>
       </p>{" "}
     </Fragment>
   );
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
 });
 
-Login.propTypes = {
+UserLogin.propTypes = {
   login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
+  auth: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { login })(UserLogin);

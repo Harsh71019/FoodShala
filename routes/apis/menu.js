@@ -85,6 +85,7 @@ router.post(
     //Build the profile object
     const menuFields = {};
     menuFields.admin = req.admin.id;
+    // menuFields.menu = req.menus.id;
     if (restaurantname) menuFields.restaurantname = restaurantname;
     if (restauranttype) menuFields.restauranttype = restauranttype;
     if (restaurantdescription)

@@ -2,8 +2,9 @@ import React, { Fragment, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { login } from "../../actions/auth";
-const Login = ({ login, isAuthenticated }) => {
+import { loginAdmin } from "../../actions/admin";
+
+const AdminLogin = ({ loginAdmin, isAuthenticatedAdmin }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,20 +16,20 @@ const Login = ({ login, isAuthenticated }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   const onSubmit = async (e) => {
     e.preventDefault();
-    login(email, password);
+    loginAdmin(email, password);
   };
 
-  //Redirected if logged in
+  // Redirected if logged in
 
-  if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+  if (isAuthenticatedAdmin) {
+    return <Redirect to="/dashboardadmin" />;
   }
   return (
     <Fragment>
       {" "}
-      <h1 className="large text-primary">Sign In</h1>
+      <h1 className="large text-primary">Login Admin</h1>
       <p className="lead">
-        <i className="fas fa-user"></i> Sign Into Your Account
+        <i className="fas fa-user"></i> Login Into Your Account as Admin
       </p>
       <form className="form" onSubmit={(e) => onSubmit(e)}>
         <div className="form-group">
@@ -56,19 +57,19 @@ const Login = ({ login, isAuthenticated }) => {
         <input type="submit" className="btn btn-primary" value="Login" />
       </form>
       <p className="my-1">
-        Dont have an account? <Link to="/register">Sign Up</Link>
+        Dont have an account? <Link to="/adminregister">Sign Up</Link>
       </p>{" "}
     </Fragment>
   );
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  isAuthenticatedAdmin: state.admin.isAuthenticatedAdmin,
 });
 
-Login.propTypes = {
-  login: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
+AdminLogin.propTypes = {
+  loginAdmin: PropTypes.func.isRequired,
+  isAuthenticatedAdmin: PropTypes.bool,
 };
 
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { loginAdmin })(AdminLogin);

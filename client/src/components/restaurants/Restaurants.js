@@ -2,10 +2,14 @@ import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 import PropTypes from "prop-types";
-import { getRestaurants } from "../../actions/profile";
+import { getRestaurants } from "../../actions/restaurant";
 import RestaurantItem from "./RestaurantItem";
+import "./Restaurant.css";
 
-const Restaurants = ({ getRestaurants, profile: { loading, restaurants } }) => {
+const Restaurants = ({
+  getRestaurants,
+  restaurant: { loading, restaurants },
+}) => {
   useEffect(() => {
     getRestaurants();
   }, [getRestaurants]);
@@ -20,10 +24,10 @@ const Restaurants = ({ getRestaurants, profile: { loading, restaurants } }) => {
             <i className="fab fa-connectdevelop"></i>
             Browse and Order with our large collections of restaurants!
           </p>
-          <div className="profiles">
+          <div className="res-name">
             {restaurants.length > 0 ? (
-                restaurants.map((restaurant) => (
-                <RestaurantItem key={restaurant._id} profile={restaurant} />
+              restaurants.map((restaurant) => (
+                <RestaurantItem key={restaurant._id} restaurant={restaurant} />
               ))
             ) : (
               <h4> No Restaurant found...</h4>
@@ -36,12 +40,12 @@ const Restaurants = ({ getRestaurants, profile: { loading, restaurants } }) => {
 };
 
 Restaurants.propTypes = {
-    getRestaurants: PropTypes.func.isRequired,
-    profile: PropTypes.object.isRequired,
-  };
+  getRestaurants: PropTypes.func.isRequired,
+  restaurant: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
-  profile: state.profile,
+  restaurant: state.restaurant,
 });
 
 export default connect(mapStateToProps, { getRestaurants })(Restaurants);

@@ -25,13 +25,17 @@ const MenuSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "admin",
       },
+      menu: {
+        type: Schema.Types.ObjectId,
+        ref: "menus",
+      },
       name: {
         type: String,
         required: true,
       },
-      role:{
+      role: {
         type: String,
-        default:"manager",
+        default: "manager",
         required: true,
       },
       price: {

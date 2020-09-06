@@ -1,6 +1,23 @@
 import React from "react";
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-const Landing = () => {
+const Landing = ({
+  admin: { loadingAdmin, isAuthenticatedAdmin },
+  auth: { loading, isAuthenticated },
+}) => {
+  
+  if (isAuthenticatedAdmin) {
+    return <Redirect to="/dashboardadmin" />;
+  } else if (isAuthenticated) {
+    return <Redirect to="/dashboarduser" />;
+  }
+
+
+  if (isAuthenticated || isAuthenticatedAdmin) {
+    return <Redirect to="/dashboard" />;
+  }
   return (
     <section className="landing">
       <div className="dark-overlay">
@@ -10,12 +27,12 @@ const Landing = () => {
             Hungry ? why wait order food from your favorite restaurants!
           </p>
           <div className="buttons">
-            <a href="register.html" className="btn btn-primary">
+            <Link to="/register" className="btn btn-primary">
               Sign Up
-            </a>
-            <a href="login.html" className="btn btn-light">
+            </Link>
+            <Link to="/login" className="btn btn-light">
               Login
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -23,4 +40,14 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+Landing.propTypes = {
+  admin: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  admin: state.admin,
+});
+
+export default connect(mapStateToProps)(Landing);

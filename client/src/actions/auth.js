@@ -8,11 +8,10 @@ import {
   LOGIN_SUCCESS,
   LOGOUT,
   CLEAR_PROFILE,
-  GET_RESTAURANTS
 } from "./types";
+
 import { setAlert } from "./alert";
 import setAuthToken from "../utils/setAuthToken";
-//Load User
 
 export const loadUser = () => async (dispatch) => {
   if (localStorage.token) {

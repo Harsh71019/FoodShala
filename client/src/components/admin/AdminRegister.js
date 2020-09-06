@@ -1,16 +1,19 @@
 import React, { Fragment, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { setAlert } from "../../actions/alert";
-import { register } from "../../actions/auth";
 import PropTypes from "prop-types";
+import { registerAdmin } from "../../actions/admin";
+import { setAlert } from "../../actions/alert";
 
-const Register = ({ setAlert, register, isAuthenticated }) => {
+const AdminRegister = ({
+  registerAdmin,
+  admin: { loadingAdmin, isAuthenticatedAdmin },
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    password2: "",
+    password2: "",  
   });
 
   const { name, email, password, password2 } = formData;
@@ -22,37 +25,20 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     if (password !== password2) {
       setAlert("Passwords do not match", "danger");
     } else {
-      register({ name, email, password });
-      // const newUser = {
-      //   name,
-      //   email,
-      //   password,
-      // };
-
-      // try {
-      //   const config = {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   };
-      //   const body = JSON.stringify(newUser);
-      //   const res = await axios.post("/api/users", body, config);
-      //   console.log(res.data);
-      // } catch (err) {
-      //   console.error(err.response.davta);
-      // }
+      registerAdmin({ name, email, password });
     }
   };
 
-  if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+  if (isAuthenticatedAdmin) {
+    return <Redirect to="/dashboardadmin" />;
   }
+
   return (
     <Fragment>
       {" "}
-      <h1 className="large text-primary">Sign Up</h1>
+      <h1 className="large text-primary">Sign Up as Admin</h1>
       <p className="lead">
-        <i className="fas fa-user"></i> Create Your Account
+        <i className="fas fa-user"></i> Create Your Account as Admin
       </p>
       <form className="form" onSubmit={(e) => onSubmit(e)}>
         <div className="form-group">
@@ -73,10 +59,6 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             placeholder="Email Address"
             name="email"
           />
-          <small className="form-text">
-            This site uses Gravatar so if you want a profile image, use a
-            Gravatar email
-          </small>
         </div>
         <div className="form-group">
           <input
@@ -103,20 +85,19 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         <input type="submit" className="btn btn-primary" value="Register" />
       </form>
       <p className="my-1">
-        Already have an account? <Link to="/login">Sign In</Link>
+        Already have an account? <Link to="/adminlogin">Sign In</Link>
       </p>
     </Fragment>
   );
 };
 
-Register.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  register: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
-};
-
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  admin: state.admin,
 });
 
-export default connect(mapStateToProps, { setAlert, register })(Register);
+registerAdmin.propTypes = {
+  registerAdmin: PropTypes.func.isRequired,
+  admin: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps, { registerAdmin })(AdminRegister);
